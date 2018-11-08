@@ -3,24 +3,20 @@ FROM hitalos/laravel:latest
 ONBUILD ENV GITHUB_KEY               ""
 ONBUILD ENV COMPOSER_ALLOW_SUPERUSER 1
 
+# install protoc
+RUN apk update && apk add protobuf
+
 RUN pecl install grpc
 RUN pecl install protobuf
 
-# install protoc
-RUN mkdir -p /tmp/protoc && \
-    curl -L https://github.com/google/protobuf/releases/download/v3.6.1/protoc-3.6.1-linux-x86_64.zip > /tmp/protoc/protoc.zip && \
-    cd /tmp/protoc && \
-    unzip protoc.zip && \
-    cp /tmp/protoc/bin/protoc /usr/local/bin && \
-    cd /tmp && \
-    rm -r /tmp/protoc && \
-    docker-php-ext-enable grpc && \
+# enable php extension
+RUN docker-php-ext-enable grpc && \
     docker-php-ext-enable protobuf
 
 # PHP protoc plugin
-RUN mkdir -p /tmp/php-protoc && \
-    git clone -b $(curl -L https://grpc.io/release) https://github.com/grpc/grpc /tmp/php-protoc && \
-    cd /tmp/php-protoc && \
+RUN mkdir -p /usr/src/php-protoc && \
+    git clone -b $(curl -L https://grpc.io/release) https://github.com/grpc/grpc /usr/src/php-protoc && \
+    cd /usr/src/php-protoc && \
     git submodule update --init && \
     make grpc_php_plugin
 
