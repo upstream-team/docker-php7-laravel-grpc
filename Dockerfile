@@ -1,6 +1,6 @@
 FROM hitalos/laravel:latest
 
-ONBUILD ENV GITHUB_KEY               ""
+ENV GITHUB_KEY               ""
 ONBUILD ENV COMPOSER_ALLOW_SUPERUSER 1
 
 # install protoc
@@ -14,11 +14,14 @@ RUN docker-php-ext-enable grpc && \
     docker-php-ext-enable protobuf
 
 # PHP protoc plugin
-RUN mkdir -p /usr/src/php-protoc && \
-    git clone -b $(curl -L https://grpc.io/release) https://github.com/grpc/grpc /usr/src/php-protoc && \
-    cd /usr/src/php-protoc && \
+RUN mkdir -p /tmp/php-protoc && \
+    git clone -b $(curl -L https://grpc.io/release) https://github.com/grpc/grpc /tmp/php-protoc && \
+    cd /tmp/php-protoc && \
     git submodule update --init && \
-    make grpc_php_plugin
+    make grpc_php_plugin && \
+    mkdir /opt && \
+    mv /tmp/php-protoc/bins/opt/* /opt && \
+    rm -Rf /tmp/php-protoc
 
 # install vendor
 RUN mkdir -p /root/.composer
