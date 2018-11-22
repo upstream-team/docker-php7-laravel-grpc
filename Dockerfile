@@ -1,6 +1,5 @@
 FROM hitalos/laravel:latest
 
-ENV GITHUB_KEY               ""
 ONBUILD ENV COMPOSER_ALLOW_SUPERUSER 1
 
 # install protoc
