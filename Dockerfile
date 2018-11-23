@@ -51,7 +51,8 @@ RUN mkdir -p /run/nginx
 #    rm -Rf /tmp/php-protoc
 
 COPY . /var/www
-RUN chmod -R 0777 /var/www/storage/app/public
+RUN chmod -R 0777 /var/www/storage
+RUN chmod -R 0777 /var/www/bootstrap/cache
 
 COPY ./start.sh /start.sh
 RUN chmod +x /start.sh
