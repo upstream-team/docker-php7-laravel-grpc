@@ -1,6 +1,7 @@
 FROM php:7-fpm
 
 WORKDIR /var/www
+EXPOSE 443
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		libfreetype6-dev \
@@ -38,6 +39,11 @@ RUN apt update -y && apt install -y nginx
 COPY ./nginx.vhost.conf /etc/nginx/conf.d/default.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
 RUN mkdir -p /run/nginx
+
+# copy crt
+RUN mkdir /crt
+COPY ./nginx.crt /crt/nginx.crt
+COPY ./nginx.key /crt/nginx.key
 
 # PHP protoc plugin
 # ONLY FOR DEV
